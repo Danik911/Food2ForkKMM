@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.food2forkkmm.android.presentation.navigation.Navigation
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             Navigation()
         }

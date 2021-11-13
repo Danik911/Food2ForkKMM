@@ -1,4 +1,4 @@
-package com.example.food2forkkmm.datastore.network
+package com.example.food2forkkmm.datasource.network
 
 import io.ktor.client.*
 import io.ktor.client.engine.ios.*

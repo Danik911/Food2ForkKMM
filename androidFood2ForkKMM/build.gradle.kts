@@ -61,6 +61,7 @@ dependencies {
 
     implementation(Hilt.hiltAndroid)
     implementation(Hilt.hiltNavigation)
+    implementation(Hilt.hiltNavigationCompose)
     kapt(Hilt.hiltCompiler)
 
     implementation(Kotlinx.datetime)

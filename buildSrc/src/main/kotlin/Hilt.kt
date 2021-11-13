@@ -5,4 +5,5 @@ object Hilt {
 
     private const val hiltNavigationVersion = "1.0.0-alpha03"
     const val hiltNavigation = "androidx.hilt:hilt-navigation:$hiltNavigationVersion"
+    const val hiltNavigationCompose = "androidx.hilt:hilt-navigation-compose:$hiltNavigationVersion"
 }
