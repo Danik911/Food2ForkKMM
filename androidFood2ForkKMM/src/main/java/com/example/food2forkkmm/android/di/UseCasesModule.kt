@@ -1,5 +1,6 @@
 package com.example.food2forkkmm.android.di
 
+import com.example.food2forkkmm.datasource.cache.RecipeCache
 import com.example.food2forkkmm.datasource.network.RecipeService
 import com.example.food2forkkmm.use_cases.recipe_detail.GetRecipe
 import com.example.food2forkkmm.use_cases.recipe_list.SearchRecipes
@@ -15,13 +16,19 @@ object UseCasesModule {
 
     @Singleton
     @Provides
-    fun provideSearchRecipes(recipeService: RecipeService): SearchRecipes{
-        return SearchRecipes(recipeService = recipeService)
+    fun provideSearchRecipes(
+        recipeService: RecipeService,
+        recipeCache: RecipeCache
+    ): SearchRecipes{
+        return SearchRecipes(
+            recipeService = recipeService,
+            recipeCache = recipeCache
+        )
     }
 
     @Singleton
     @Provides
-    fun provideGetRecipe(recipeService: RecipeService): GetRecipe{
-        return GetRecipe(recipeService = recipeService)
+    fun provideGetRecipe(recipeCache: RecipeCache): GetRecipe{
+        return GetRecipe(recipeCache = recipeCache)
     }
 }

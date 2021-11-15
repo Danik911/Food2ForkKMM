@@ -1,6 +1,8 @@
 package com.example.food2forkkmm.android.presentation.navigation
 
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -16,6 +18,8 @@ import com.example.food2forkkmm.android.presentation.recipe_list.RecipeListViewM
 
 
 
+@ExperimentalComposeUiApi
+@ExperimentalMaterialApi
 @ExperimentalStdlibApi
 @Composable
 fun Navigation() {
