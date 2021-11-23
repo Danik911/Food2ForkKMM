@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.example.food2forkkmm.android.presentation.recipe_list.components.RecipeList
 import com.example.food2forkkmm.android.presentation.recipe_list.components.SearchAppBar
 import com.example.food2forkkmm.android.presentation.theme.AppTheme
+import com.example.food2forkkmm.presentation.recipe_list.FoodCategoryUtil
 import com.example.food2forkkmm.presentation.recipe_list.RecipeListEvents
 import com.example.food2forkkmm.presentation.recipe_list.RecipeListState
 
@@ -21,17 +23,20 @@ fun RecipeListScreen(
 ) {
     AppTheme(displayProgressBar = state.isLoading) {
 
-
+        val foodCategories = remember {
+            FoodCategoryUtil().getAllFoodCategories()
+        }
         Scaffold(
             topBar = {
                 SearchAppBar(
                     query = state.query,
                     onQueryChange = {
-                                    //TODO
+                        onTriggerEvent(RecipeListEvents.OnUpdateQuery(it))
                     },
                     onExecuteSearch = {
-                        //TODO
-                    }
+                        onTriggerEvent(RecipeListEvents.NewSearch)
+                    },
+                    categories = foodCategories
                 )
             }
         ) {
