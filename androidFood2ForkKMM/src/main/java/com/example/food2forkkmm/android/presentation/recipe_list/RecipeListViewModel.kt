@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.food2forkkmm.domain.model.Recipe
+import com.example.food2forkkmm.presentation.recipe_list.FoodCategory
 import com.example.food2forkkmm.presentation.recipe_list.RecipeListEvents
 import com.example.food2forkkmm.presentation.recipe_list.RecipeListState
 import com.example.food2forkkmm.use_cases.recipe_list.SearchRecipes
@@ -36,12 +37,20 @@ class RecipeListViewModel @Inject constructor(
                 newSearch()
             }
             is RecipeListEvents.OnUpdateQuery -> {
-               state.value = state.value.copy(query = event.query)
+               state.value = state.value.copy(query = event.query, selectedCategory = null)
+            }
+            is RecipeListEvents.OnSelectCategory -> {
+                onSelectCategory(event.category)
             }
             else -> {
                 handleError()
             }
         }
+    }
+
+    private fun onSelectCategory(category: FoodCategory){
+        state.value = state.value.copy(selectedCategory = category, query = category.value)
+        newSearch()
     }
 
     private fun newSearch() {
