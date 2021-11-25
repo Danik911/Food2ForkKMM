@@ -44,7 +44,8 @@ fun Navigation() {
         ) { navBackStackEntry ->
             val viewModel: RecipeDetailViewModel = hiltViewModel()
             RecipeDetailScreen(
-                recipe = viewModel.recipe.value
+                state = viewModel.state.value,
+                onTriggerEvent = viewModel::onTriggerEvent
                 //navBackStackEntry.arguments?.getInt("recipeId") Don't need to extract this from arguments
                 // because we use SavedStateHandle
             )
