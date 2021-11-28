@@ -6,8 +6,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.food2forkkmm.datasource.network.RecipeService
+import com.example.food2forkkmm.domain.model.GenericMessageInfo
 import com.example.food2forkkmm.domain.model.Recipe
+import com.example.food2forkkmm.domain.model.UIComponentType
 import com.example.food2forkkmm.domain.util.DatetimeUtil
+import com.example.food2forkkmm.domain.util.GenericMessageInfoQueueUtil
+import com.example.food2forkkmm.domain.util.Queue
 import com.example.food2forkkmm.presentation.recipe_detail.RecipeDetailEvents
 import com.example.food2forkkmm.presentation.recipe_detail.RecipeDetailState
 import com.example.food2forkkmm.use_cases.recipe_detail.GetRecipe
@@ -15,6 +19,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.util.*
 import javax.inject.Inject
 
 @ExperimentalStdlibApi
@@ -35,33 +41,61 @@ class RecipeDetailViewModel @Inject constructor(
         }
 
     }
-    fun onTriggerEvent(event: RecipeDetailEvents){
-        when(event){
+
+    fun onTriggerEvent(event: RecipeDetailEvents) {
+        when (event) {
             is RecipeDetailEvents.GetRecipe -> {
                 getRecipe(event.recipeId)
             }
+            is RecipeDetailEvents.OnRemoveHeadMessageFromQueue -> {
+                removeHeadMessage()
+            }
             else -> {
-                handleError("Invalid Event")
+                appendToMessageQueue(
+                    GenericMessageInfo.Builder()
+                        .id(UUID.randomUUID().toString())
+                        .title("Error")
+                        .uiComponentType(UIComponentType.Dialog)
+                        .description("Invalid Event")
+                )
             }
         }
     }
+    private fun removeHeadMessage() {
+        try {
+            val queue = state.value.queue
+            queue.remove()
+            state.value = state.value.copy(queue = Queue(mutableListOf())) // trigger recomposition
+            state.value = state.value.copy(queue = queue)
+        } catch (e: Exception){
 
-    private fun handleError(errorMessage: String) {
-        TODO("Not yet implemented")
+        }
     }
 
-    private fun getRecipe(recipeId: Int){
-        getRecipe.execute(recipeId = recipeId).onEach { dataState->
+    private fun appendToMessageQueue(messageInfo: GenericMessageInfo.Builder) {
 
-           state.value = state.value.copy(isLoading = dataState.isLoading)
+        if (!GenericMessageInfoQueueUtil().doesMessageAlreadyExistInQueue(
+                queue = state.value.queue, messageInfo = messageInfo.build()
+            )
+        ){
+            val queue = state.value.queue
+            queue.add(messageInfo.build())
+            state.value = state.value.copy(queue = queue)
+        }
+    }
+
+    private fun getRecipe(recipeId: Int) {
+        getRecipe.execute(recipeId = recipeId).onEach { dataState ->
+
+            state.value = state.value.copy(isLoading = dataState.isLoading)
 
             dataState.data?.let { recipe ->
                 state.value = state.value.copy(recipe = recipe)
             }
 
             dataState.message?.let { message ->
-                handleError(message)
-            }            
+                appendToMessageQueue(message)
+            }
         }.launchIn(viewModelScope)
     }
 }
